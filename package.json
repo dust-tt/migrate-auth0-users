@@ -3,7 +3,9 @@
   "module": "src/index.ts",
   "type": "module",
   "bin": {
-    "migrate-auth0-users": "bin/migrate-auth0-users.ts"
+    "export-auth0-users": "bin/fetch-users.sh",
+    "migrate-auth0-users": "bin/migrate-auth0-users.ts",
+    "update-auth0-users": "bin/update-auth0-users.ts"
   },
   "scripts": {
     "build": "tsc",
@@ -20,7 +22,8 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@workos-inc/node": "^7.4.0",
+    "@workos-inc/node": "^7.52.0",
+    "auth0": "^4.3.0",
     "better-sqlite3": "^9.0.0",
     "dotenv": "^16.3.1",
     "kysely": "^0.26.3",

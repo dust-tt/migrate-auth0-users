@@ -6,11 +6,19 @@ import { z } from "zod";
  *   https://auth0.com/docs/customize/extensions/user-import-export-extension
  */
 export const Auth0ExportedUser = z.object({
-  Id: z.string(),
-  Email: z.string(),
-  "Email Verified": z.optional(z.boolean()),
-  "Given Name": z.optional(z.string()),
-  "Family Name": z.optional(z.string()),
+  user_id: z.string(),
+  email: z.string(),
+  email_verified: z.union([z.boolean(), z.string()]),
+  name: z.string(),
+  family_name: z.string().optional(),
+  given_name: z.string().optional(),
+  nickname: z.string(),
+  picture: z.string(),
+  provider: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+  region: z.string().optional(),
+  workos_user_id: z.string().optional(),
 });
 
 export type Auth0ExportedUser = z.infer<typeof Auth0ExportedUser>;

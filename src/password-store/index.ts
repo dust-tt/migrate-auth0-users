@@ -1,7 +1,7 @@
+import SQLite from "better-sqlite3";
+import { Kysely, SqliteDialect } from "kysely";
 import { z } from "zod";
 import { ndjsonStream } from "../ndjson-stream";
-import { Kysely, SqliteDialect } from "kysely";
-import SQLite from "better-sqlite3";
 import { Database, Password } from "./database";
 
 const ExportedPassword = z.object({
@@ -23,21 +23,23 @@ export class PasswordStore {
   }
 
   async fromPasswordExport(
-    passwordExportFilePath: string,
+    passwordExportFilePath?: string
   ): Promise<PasswordStore> {
     await this.prepareSchema();
 
-    for await (const line of ndjsonStream(passwordExportFilePath)) {
-      const exportedPassword = ExportedPassword.parse(line);
+    if (passwordExportFilePath) {
+      for await (const line of ndjsonStream(passwordExportFilePath)) {
+        const exportedPassword = ExportedPassword.parse(line);
 
-      await this.db
-        .insertInto("passwords")
-        .values({
-          auth0_id: exportedPassword._id.$oid,
-          password_hash: exportedPassword.passwordHash,
-        })
-        .onConflict((oc) => oc.doNothing())
-        .execute();
+        await this.db
+          .insertInto("passwords")
+          .values({
+            auth0_id: exportedPassword._id.$oid,
+            password_hash: exportedPassword.passwordHash,
+          })
+          .onConflict((oc) => oc.doNothing())
+          .execute();
+      }
     }
 
     return this;
