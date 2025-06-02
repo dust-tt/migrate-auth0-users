@@ -142,7 +142,7 @@ async function processLine(
   return true;
 }
 
-const DEFAULT_RETRY_AFTER = 10;
+const DEFAULT_RETRY_AFTER = 60;
 const MAX_CONCURRENT_USER_IMPORTS = 10;
 
 async function main() {
