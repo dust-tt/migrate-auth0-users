@@ -155,6 +155,7 @@ async function main() {
   const {
     // passwordExport: passwordFilePath,
     userExport: userFilePath,
+    skip,
     // cleanupTempDb,
   } = await yargs(hideBin(process.argv))
     .option("user-export", {
@@ -162,6 +163,11 @@ async function main() {
       default: "out/users.jsonl",
       description:
         "Path to the user export created by the Auth0 export extension.",
+    })
+    .option("skip", {
+      type: "number",
+      default: 0,
+      description: "Number of users to skip.",
     })
     // .option("password-export", {
     //   type: "string",
@@ -194,36 +200,39 @@ async function main() {
       await queue.onSizeLessThan(MAX_CONCURRENT_USER_IMPORTS);
 
       const recordNumber = recordCount;
-      const enqueueTask = () =>
-        queue
-          .add(async () => {
-            const successful = await processLine(
-              line,
-              recordNumber
-              // passwordStore
-            );
-            if (successful) {
-              completedCount++;
-            }
-          })
-          .catch(async (error: unknown) => {
-            if (!(error instanceof RateLimitExceededException)) {
-              throw error;
-            }
 
-            const retryAfter = (error.retryAfter ?? DEFAULT_RETRY_AFTER) + 1;
-            console.warn(
-              `Rate limit exceeded. Pausing queue for ${retryAfter} seconds.`
-            );
+      if (recordNumber >= skip) {
+        const enqueueTask = () =>
+          queue
+            .add(async () => {
+              const successful = await processLine(
+                line,
+                recordNumber
+                // passwordStore
+              );
+              if (successful) {
+                completedCount++;
+              }
+            })
+            .catch(async (error: unknown) => {
+              if (!(error instanceof RateLimitExceededException)) {
+                throw error;
+              }
 
-            queue.pause();
-            enqueueTask();
+              const retryAfter = (error.retryAfter ?? DEFAULT_RETRY_AFTER) + 1;
+              console.warn(
+                `Rate limit exceeded. Pausing queue for ${retryAfter} seconds.`
+              );
 
-            await sleep(retryAfter * 1000);
+              queue.pause();
+              enqueueTask();
 
-            queue.start();
-          });
-      enqueueTask();
+              await sleep(retryAfter * 1000);
+
+              queue.start();
+            });
+        enqueueTask();
+      }
 
       recordCount++;
     }
