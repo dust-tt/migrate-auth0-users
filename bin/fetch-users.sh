@@ -1,6 +1,6 @@
 #!/bin/sh
 
-EXPORT_JOB_ID=$(curl -L "${AUTH0_TENANT_DOMAIN_URL}/api/v2/jobs/users-exports" \
+EXPORT_JOB_ID=$(curl -L "https://${AUTH0_TENANT_DOMAIN_URL}/api/v2/jobs/users-exports" \
 -H 'Content-Type: application/json' \
 -H 'Accept: application/json' \
 -H "Authorization: Bearer ${AUTH0_API_TOKEN}" \
@@ -10,7 +10,7 @@ EXPORT_JOB_ID=$(curl -L "${AUTH0_TENANT_DOMAIN_URL}/api/v2/jobs/users-exports" \
 echo Export job ID: ${EXPORT_JOB_ID}
 
 while true; do
-  STATUS=$(curl -L "${AUTH0_TENANT_DOMAIN_URL}/api/v2/jobs/${EXPORT_JOB_ID}" \
+  STATUS=$(curl -L "https://${AUTH0_TENANT_DOMAIN_URL}/api/v2/jobs/${EXPORT_JOB_ID}" \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${AUTH0_API_TOKEN}" \
   -s | jq -r .status)
@@ -24,7 +24,7 @@ while true; do
   sleep 5
 done
 
-URL=$(curl -L "${AUTH0_TENANT_DOMAIN_URL}/api/v2/jobs/${EXPORT_JOB_ID}" \
+URL=$(curl -L "https://${AUTH0_TENANT_DOMAIN_URL}/api/v2/jobs/${EXPORT_JOB_ID}" \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${AUTH0_API_TOKEN}" \
   -s | jq -r .location)

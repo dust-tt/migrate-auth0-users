@@ -6,7 +6,7 @@ import { sleep } from "./sleep";
 dotenv.config();
 
 const auth0 = new ManagementClient({
-  domain: "dust-dev.eu.auth0.com",
+  domain: process.env.AUTH0_TENANT_DOMAIN_URL!,
   token: process.env.AUTH0_API_TOKEN!,
 });
 
