@@ -99,7 +99,13 @@ async function processLine(
   recordNumber: number
   // passwordStore: PasswordStore
 ): Promise<boolean> {
-  const exportedUser = Auth0ExportedUser.parse(line);
+  let exportedUser: Auth0ExportedUser;
+  try {
+    exportedUser = Auth0ExportedUser.parse(line);
+  } catch (error) {
+    console.error(`(${recordNumber}) Error parsing user: ${error}`);
+    return false;
+  }
 
   // const password = await passwordStore.find(exportedUser.user_id);
   // if (!password) {
