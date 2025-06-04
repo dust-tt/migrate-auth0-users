@@ -30,8 +30,8 @@ async function updateUser(exportedUser: Auth0ExportedUser, existingUser: User) {
     userId: existingUser.id,
     emailVerified:
       existingUser.emailVerified ||
-      exportedUser.email_verified === true ||
-      exportedUser.email_verified === "true",
+      (exportedUser.email_verified !== false &&
+        exportedUser.email_verified !== "false"),
     firstName: exportedUser.given_name,
     lastName: exportedUser.family_name,
     metadata: {
@@ -65,8 +65,8 @@ async function findOrCreateUser(
     const user = await workos.userManagement.createUser({
       email: exportedUser.email,
       emailVerified:
-        exportedUser.email_verified === true ||
-        exportedUser.email_verified === "true",
+        exportedUser.email_verified !== false &&
+        exportedUser.email_verified !== "false",
       firstName: exportedUser.given_name,
       lastName: exportedUser.family_name,
       metadata: {
