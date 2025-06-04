@@ -3,6 +3,7 @@
   "module": "src/index.ts",
   "type": "module",
   "bin": {
+    "update-workos-ids": "bin/update-workos-ids.ts",
     "identify-auth0-users": "bin/identify-auth0-users.ts",
     "export-auth0-users": "bin/fetch-users.sh",
     "migrate-auth0-users": "bin/migrate-auth0-users.ts",
