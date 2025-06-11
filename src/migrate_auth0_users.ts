@@ -92,6 +92,7 @@ async function findOrCreateUser(
       return { workOsUser: undefined, created: false };
     }
   }
+  return { workOsUser: undefined, created: false };
 }
 
 async function processLine(
